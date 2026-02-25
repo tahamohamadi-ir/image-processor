@@ -1,0 +1,67 @@
+### ── Health Check ──────────────────────────────────────────────
+GET http://localhost:8000/health
+Accept: application/json
+
+### ── List Loaded Models ─────────────────────────────────────────
+GET http://localhost:8000/api/v1/models
+Accept: application/json
+
+### ── Full Pipeline (all steps) ─────────────────────────────────
+POST http://localhost:8000/api/v1/process
+Content-Type: multipart/form-data; boundary=---boundary
+
+-----boundary
+Content-Disposition: form-data; name="file"; filename="bicycle.jpg"
+Content-Type: image/jpeg
+
+< ./bicycle.jpg
+-----boundary
+Content-Disposition: form-data; name="config"
+
+{"denoise": true, "remove_shadow": true, "remove_background": true, "enhance": false, "use_matting": true, "output_format": "png"}
+-----boundary--
+
+### ── Background Removal Only ────────────────────────────────────
+POST http://localhost:8000/api/v1/process
+Content-Type: multipart/form-data; boundary=---boundary
+
+-----boundary
+Content-Disposition: form-data; name="file"; filename="bicycle.jpg"
+Content-Type: image/jpeg
+
+< ./bicycle.jpg
+-----boundary
+Content-Disposition: form-data; name="config"
+
+{"denoise": false, "remove_shadow": false, "remove_background": true, "enhance": false, "use_matting": true, "output_format": "png"}
+-----boundary--
+
+### ── Denoise + Shadow Only (no BG removal) ─────────────────────
+POST http://localhost:8000/api/v1/process
+Content-Type: multipart/form-data; boundary=---boundary
+
+-----boundary
+Content-Disposition: form-data; name="file"; filename="bicycle.jpg"
+Content-Type: image/jpeg
+
+< ./bicycle.jpg
+-----boundary
+Content-Disposition: form-data; name="config"
+
+{"denoise": true, "remove_shadow": true, "remove_background": false, "enhance": false, "output_format": "png"}
+-----boundary--
+
+### ── WEBP Output ────────────────────────────────────────────────
+POST http://localhost:8000/api/v1/process
+Content-Type: multipart/form-data; boundary=---boundary
+
+-----boundary
+Content-Disposition: form-data; name="file"; filename="bicycle.jpg"
+Content-Type: image/jpeg
+
+< ./bicycle.jpg
+-----boundary
+Content-Disposition: form-data; name="config"
+
+{"denoise": true, "remove_shadow": true, "remove_background": true, "enhance": false, "output_format": "webp"}
+-----boundary--
